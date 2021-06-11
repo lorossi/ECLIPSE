@@ -13,9 +13,10 @@ class Particle {
     this._max_alpha = 0.3;
     this._min_saturation = 25;
     this._max_angle = Math.PI * 2;
+    this._noise_depth = 5;
 
     this._noise_scl = 0.0015;
-    this._time_scl = 0.2;
+    this._time_scl = 0.1;
     this._scl = 10;
 
     // calculate starting angle
@@ -38,7 +39,7 @@ class Particle {
     // generate each point
     for (let i = 1; i < this._length; i++) {
       const prev = this._points[i - 1];
-      const n = this._noise.noise4D(prev.x * this._noise_scl, prev.y * this._noise_scl, tx, ty);
+      const n = this._generateNoise(prev.x * this._noise_scl, prev.y * this._noise_scl, tx, ty);
       // rotate each point by a certain angle 
       const theta = n * this._max_angle + this._angle;
       // calculate xy coordinates
@@ -72,5 +73,16 @@ class Particle {
     }
 
     ctx.restore();
+  }
+
+  _generateNoise(x, y, z, w) {
+    let n = 0;
+    for (let i = 0; i < this._noise_depth; i++) {
+      const frequency = i + 1;
+      const amplitude = Math.pow(2, i);
+      n += this._noise.noise4D(x * frequency, y * frequency, z * frequency, w * frequency) / amplitude;
+    }
+
+    return n;
   }
 }

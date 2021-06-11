@@ -2,9 +2,10 @@ class Sketch extends Engine {
   preload() {
     this._max_particles = 500;
     this._r = this.width / 6;
-    this._max_life = this.width / 2 - this._r;
+    this._max_life = 2 * this._r;
+    this._colors = false;
     this._duration = 900;
-    this._recording = true;
+    this._recording = false;
   }
 
   setup() {
@@ -26,7 +27,7 @@ class Sketch extends Engine {
       const x = Math.cos(theta) * this._r;
       const y = Math.sin(theta) * this._r;
       // create particle
-      this._particles.push(new Particle(x, y, theta, this._max_life, this._noise))
+      this._particles.push(new Particle(x, y, theta, this._max_life, this._noise, this._colors));
     }
   }
 
@@ -62,7 +63,7 @@ class Sketch extends Engine {
     this._particles.forEach(p => {
       p.move(percent);
       p.show(this.ctx);
-    })
+    });
 
     this.ctx.restore();
 
