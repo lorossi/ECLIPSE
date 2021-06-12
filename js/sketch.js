@@ -1,9 +1,10 @@
 class Sketch extends Engine {
   preload() {
-    this._max_particles = 500;
+    this._max_particles = 5000;
     this._r = this.width / 6;
-    this._max_life = 2 * this._r;
-    this._colors = false;
+    this._max_life = 2.5 * this._r;
+    this._color_mode = 0; // 0 - white on black, 1 - black on white, 2 - colors on black, 3 - colors on white
+    this._time_scl = 0.25;
     this._duration = 900;
     this._recording = false;
   }
@@ -24,10 +25,10 @@ class Sketch extends Engine {
       // particle angular coordinate
       const theta = Math.random() * Math.PI * 2;
       // convert to x-y coordinates
-      const x = Math.cos(theta) * this._r;
-      const y = Math.sin(theta) * this._r;
+      const x = Math.floor(Math.cos(theta) * this._r);
+      const y = Math.floor(Math.sin(theta) * this._r);
       // create particle
-      this._particles.push(new Particle(x, y, theta, this._max_life, this._noise, this._colors));
+      this._particles.push(new Particle(x, y, theta, this._max_life, this._noise, this._color_mode));
     }
   }
 
@@ -41,18 +42,45 @@ class Sketch extends Engine {
 
     // time calculation
     const percent = (this.frameCount % this._duration) / this._duration;
+    // calculate time coordinates
+    const time_theta = Math.PI * 2 * percent;
+    const tx = this._time_scl * (Math.cos(time_theta) + 1);
+    const ty = this._time_scl * (Math.sin(time_theta) + 1);
 
     this.ctx.save();
 
     this.ctx.clearRect(0, 0, this.width, this.height);
-    this.ctx.fillStyle = "rgb(15, 15, 15)";
+
+    switch (this._color_mode) {
+      case 0:
+      case 2:
+        this.ctx.fillStyle = "rgb(15, 15, 15)";
+        break;
+
+      case 1:
+      case 3:
+      default:
+        this.ctx.fillStyle = "rgb(255, 255, 255)";
+        break;
+    }
+
+
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     this.ctx.translate(this.width / 2, this.height / 2);
 
     // draw central ring
     this.ctx.save();
-    this.ctx.strokeStyle = "rgb(235, 235, 235)";
+    switch (this._color_mode) {
+      case 1:
+      case 3:
+        this.ctx.strokeStyle = "rgb(15, 15, 15)";
+        break;
+      default:
+        this.ctx.strokeStyle = "rgb(235, 235, 235)";
+        break;
+    }
+
     this.ctx.lineWidth = 5;
     this.ctx.beginPath();
     this.ctx.arc(0, 0, this._r, 0, Math.PI * 2);
@@ -61,7 +89,7 @@ class Sketch extends Engine {
 
     // draw each particle
     this._particles.forEach(p => {
-      p.move(percent);
+      p.move(tx, ty);
       p.show(this.ctx);
     });
 
@@ -86,9 +114,11 @@ class Sketch extends Engine {
     //this.noLoop();
   }
 
-  mousedown() {
-    this.setup();
-    this.loop();
+  click() {
+    if (!this._recording) {
+      this.setup();
+      this.loop();
+    }
   }
 }
 
