@@ -2,19 +2,20 @@ class Particle {
   constructor(x, y, theta, max_life, noise, color_mode = false) {
     this._x = x;
     this._y = y;
-    this._theta = theta;
+    this._theta = theta % (Math.PI * 2);
     this._max_life = max_life;
     this._noise = noise;
     this._color_mode = color_mode;
 
     // parameters
     this._min_life = 0.4;
-    this._max_alpha = 0.2;
+    this._max_alpha = 0.6;
     this._min_saturation = 25;
     this._max_angle = Math.PI / 2;
     this._noise_depth = 3;
-    this._noise_scl = 0.0005;
-    this._scl = 5;
+    this._noise_scl = 0.0003;
+    this._scl = 2;
+    this._width = 2;
 
     // calculate starting angle
     this._angle = Math.atan2(this._y, this._x);
@@ -36,8 +37,8 @@ class Particle {
       // rotate each point by a certain angle 
       const theta = n * this._max_angle + this._angle;
       // calculate xy coordinates
-      const nx = prev.x + Math.floor(Math.cos(theta) * this._scl);
-      const ny = prev.y + Math.floor(Math.sin(theta) * this._scl);
+      const nx = prev.x + Math.cos(theta) * this._scl;
+      const ny = prev.y + Math.sin(theta) * this._scl;
 
       this._points.push({ x: nx, y: ny });
     }
@@ -65,7 +66,7 @@ class Particle {
           ctx.strokeStyle = `hsla(${this._hue}, ${saturation}%, 50%, ${alpha})`;
       }
 
-      ctx.strokeWidth = 2;
+      ctx.strokeWidth = this._width;
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);

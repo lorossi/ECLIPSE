@@ -1,12 +1,13 @@
 class Sketch extends Engine {
   preload() {
-    this._max_particles = 5000;
-    this._r = this.width / 6;
-    this._max_life = 2.5 * this._r;
+    this._max_particles = 1500;
+    this._r = this.width / 5;
+    this._max_life = this.width / 2;
     this._color_mode = 0; // 0 - white on black, 1 - black on white, 2 - colors on black, 3 - colors on white
     this._time_scl = 0.25;
     this._duration = 900;
     this._recording = false;
+    this._animated = false;
   }
 
   setup() {
@@ -23,7 +24,7 @@ class Sketch extends Engine {
     const d_theta = Math.PI * 2 / this._max_particles;
     for (let i = 0; i < this._max_particles; i++) {
       // particle angular coordinate
-      const theta = Math.random() * Math.PI * 2;
+      const theta = Math.random() * Math.PI * 100;
       // convert to x-y coordinates
       const x = Math.floor(Math.cos(theta) * this._r);
       const y = Math.floor(Math.sin(theta) * this._r);
@@ -111,7 +112,7 @@ class Sketch extends Engine {
       }
     }
 
-    //this.noLoop();
+    if (!this._animated) this.noLoop();
   }
 
   click() {
