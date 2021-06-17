@@ -8,8 +8,8 @@ class Particle {
     this._color_mode = color_mode;
 
     // parameters
-    this._min_life = 0.4;
-    this._max_alpha = 0.6;
+    this._min_life = 0.5;
+    this._max_alpha = 0.3;
     this._min_saturation = 25;
     this._max_angle = Math.PI / 2;
     this._noise_depth = 3;
@@ -48,8 +48,10 @@ class Particle {
     ctx.save();
 
     for (let i = 0; i < this._points.length - 1; i++) {
+      // alpha and saturation are eased and relative to distance
       const alpha = (ease((1 - i / this._points.length)) * this._max_alpha).toFixed(2);
       const saturation = Math.floor(ease((1 - i / this._points.length)) * (100 - this._min_saturation) + this._min_saturation);
+      // points unpacking
       const p1 = this._points[i];
       const p2 = this._points[i + 1];
 
@@ -76,7 +78,8 @@ class Particle {
     ctx.restore();
   }
 
-  _generateNoise(x, y, z = 0, w = 0) {
+  _generateNoise(x = 0, y = 0, z = 0, w = 0) {
+    // multiple harmonics noise generation
     let n = 0;
     for (let i = 0; i < this._noise_depth; i++) {
       const frequency = Math.pow(2, i);

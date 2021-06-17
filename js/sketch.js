@@ -1,13 +1,13 @@
 class Sketch extends Engine {
   preload() {
-    this._max_particles = 1500;
+    this._max_particles = 4000;
     this._r = this.width / 5;
-    this._max_life = this.width / 2;
-    this._color_mode = 0; // 0 - white on black, 1 - black on white, 2 - colors on black, 3 - colors on white
-    this._time_scl = 0.25;
-    this._duration = 900;
-    this._recording = false;
-    this._animated = false;
+    this._max_life = this._r * 2;
+    this._color_mode = 1; // 0 - white on black, 1 - black on white, 2 - colors on black, 3 - colors on white
+    this._time_scl = 0.05;
+    this._duration = 600;
+    this._recording = true;
+    this._animated = true;
   }
 
   setup() {
@@ -67,7 +67,6 @@ class Sketch extends Engine {
 
 
     this.ctx.fillRect(0, 0, this.width, this.height);
-
     this.ctx.translate(this.width / 2, this.height / 2);
 
     // draw central ring
